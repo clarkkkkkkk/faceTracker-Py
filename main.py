@@ -26,7 +26,7 @@ while True:
     success, img = cap.read() # initialize or read the camera
 
     imgBackground[168:168 + 480, 80:80 + 640] = img # position of the camera
-    imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[3]
+    imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[2]
 
     # cv2.imshow("Webcam", img) #this just like a {consol.log} on jsFile
     cv2.imshow("Face Attendance", imgBackground) # background image
