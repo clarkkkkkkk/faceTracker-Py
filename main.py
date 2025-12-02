@@ -6,6 +6,9 @@ import cvzone
 import cv2
 import face_recognition
 from importlib.metadata import files
+
+from PIL.ImageChops import offset
+
 from EncodeGenerator import encodeListKnownWithIds
 
 cap = cv2.VideoCapture(0) # use the camera
@@ -62,7 +65,10 @@ while True:
         if matches[matchIndex]:
             print("Face Detected")
             print(studentIds[matchIndex]) # student ID (file name[match face])
-            ########cvzone.cornerRect(imgBackground, bbox,rt=0)
+            y1, x2, y2, x1 = faceLoc # define to {bbox from cvzone}
+            y1, x2, y2, x1 = y1*1, x2*1, y2*1, x1*1 # resize square face recognition
+            bbox = 55+x1, 162+y1, x2 - x1, y2 - y1 # bounding box (convert to cvzone format)
+            imgBackground = cvzone.cornerRect(imgBackground, bbox,rt=0)
         else:
             print("Nothing Detected")
 
@@ -70,4 +76,3 @@ while True:
     # cv2.imshow("Webcam", img) #this just like a {consol.log} on jsFile
     cv2.imshow("Face Attendance", imgBackground) # background image
     cv2.waitKey(1)
-
