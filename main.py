@@ -2,6 +2,7 @@ import os
 import pickle
 from uu import encode
 import numpy as np
+import cvzone
 import cv2
 import face_recognition
 from importlib.metadata import files
@@ -60,12 +61,13 @@ while True:
 
         if matches[matchIndex]:
             print("Face Detected")
+            print(studentIds[matchIndex]) # student ID (file name[match face])
+            ########cvzone.cornerRect(imgBackground, bbox,rt=0)
         else:
             print("Nothing Detected")
-
-
 
 
     # cv2.imshow("Webcam", img) #this just like a {consol.log} on jsFile
     cv2.imshow("Face Attendance", imgBackground) # background image
     cv2.waitKey(1)
+
