@@ -1,1 +1,2 @@
-.Resources/*
+.Resources/
+*.log
