@@ -1,2 +1,6 @@
-.Resources/
+Resources/
 *.log
+
+# .env file ignore
+.env
+serviceAccountKey.json
