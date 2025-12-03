@@ -4,3 +4,4 @@ Resources/
 # .env file ignore
 .env
 serviceAccountKey.json
+*.json
