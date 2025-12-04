@@ -8,7 +8,6 @@ import face_recognition
 from importlib.metadata import files
 
 from PIL.ImageChops import offset
-
 from EncodeGenerator import encodeListKnownWithIds
 
 cap = cv2.VideoCapture(0) # use the camera
