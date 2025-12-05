@@ -12,17 +12,10 @@ from supabase import create_client, Client
 
 # Supabase credentials ------------------- to be continue this production
 SUPABASE_URL = "https://dbxilzmejnkfcvmbsbbx.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRieGlsem1lam5rZmN2bWJzYmJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDY5MzgsImV4cCI6MjA4MDMyMjkzOH0.VbfvwBkenNJfoPxWP4pweDv1boxsXKhQwjWGUe6KzoA"
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 BUCKET_NAME = "faceAttendanceProject"   # replace with your bucket name
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-
-#cred = credentials.Certificate("serviceAccountKey.json")
-#firebase_admin.initialize_app(cred,{
-#    'databaseURL': "https://faceattendanceproject-e9b0d-default-rtdb.firebaseio.com/",
-#    'storageBucket': "{give me a guide where i can find similar like this ->(link folder path of the storage from firebase for example)}",
-#})
 
 # Importing the students images
 folderPath = 'Images'
@@ -44,12 +37,6 @@ for path in pathList:
             file=f,
             file_options={"content-type": "image/jpeg"}
         )
-
-    #fileName = f'{folderPath}/{path}'
-    #bucket = storage.bucket()
-    #blob = bucket.blob(fileName)
-    #blob.upload_from_filename(fileName)
-
     # print(os.path.splitext(path)[0])
 print(studentIds)
 
