@@ -10,6 +10,16 @@ from importlib.metadata import files
 from PIL.ImageChops import offset
 from EncodeGenerator import encodeListKnownWithIds
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred,{
+    'databaseURL': "https://faceattendanceproject-e9b0d-default-rtdb.firebaseio.com/",
+})
+
+
 cap = cv2.VideoCapture(0) # use the camera
 cap.set(3, 640) #Video width Dimension
 cap.set(4, 480) #Video height Dimension

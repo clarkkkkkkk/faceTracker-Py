@@ -3,14 +3,9 @@ import pickle
 import face_recognition
 import os
 
-#import firebase_admin
-#from firebase_admin import  credentials
-#from firebase_admin import  db
-#from firebase_admin storage
-
 from supabase import create_client, Client
 
-# Supabase credentials ------------------- to be continue this production
+# Supabase credentials
 SUPABASE_URL = "https://dbxilzmejnkfcvmbsbbx.supabase.co"
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 BUCKET_NAME = "faceAttendanceProject"   # replace with your bucket name
