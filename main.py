@@ -99,11 +99,30 @@ while True:
     if counter != 0:
 
         if counter == 1:
+            #Get data
             studentInfo = db.reference(f'Students/{id}').get()
             print(studentInfo)
 
+            #Get data Image from the Storage
+
         cv2.putText(imgBackground, str(studentInfo['total_attendance']), (900,110),
                     cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),1)
+        cv2.putText(imgBackground, str(studentInfo['major']), (1000,535),
+                    cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),1)
+        cv2.putText(imgBackground, str(id), (1000,482),
+                    cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),1)
+        cv2.putText(imgBackground, str(studentInfo['starting_year']), (1105,642),
+                    cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
+        cv2.putText(imgBackground, str(studentInfo['standing']), (1010,642),
+                    cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
+        cv2.putText(imgBackground, str(studentInfo['year']), (930,642),
+                    cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
+
+        (w,h), _ = cv2.getTextSize(studentInfo['name'], cv2.FONT_HERSHEY_COMPLEX, 1, 2)
+        offset = (370-w)//2 # this 2 line of code is to off centre the text {name}
+        cv2.putText(imgBackground, str(studentInfo['name']), (830+offset,440),
+                    cv2.FONT_HERSHEY_COMPLEX,1,(0,0,0),1)
+
 
         counter +=1
 
