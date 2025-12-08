@@ -6,13 +6,23 @@ import cvzone
 import cv2
 import face_recognition
 from importlib.metadata import files
-
 from PIL.ImageChops import offset
-from EncodeGenerator import encodeListKnownWithIds
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+
+from dotenv import load_dotenv
+load_dotenv()
+
+from supabase import create_client, Client
+
+# Supabase credentials
+SUPABASE_URL = "https://dbxilzmejnkfcvmbsbbx.supabase.co"
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+BUCKET_NAME = "faceAttendanceProject"   # replace with your bucket name
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred,{
@@ -48,6 +58,9 @@ encodeListKnown, studentIds = encodeListKnownWithIds
 # print(studentIds, "Student Ids")
 print("Encode File Loaded ...")
 
+modeType = 0
+counter = 0
+id = -1
 
 #RUNNING PROCESS
 while True:
@@ -60,7 +73,7 @@ while True:
     encodeCurFrame = face_recognition.face_encodings(imgS, faceCurFrame) #
 
     imgBackground[168:168 + 480, 80:80 + 640] = img # position of the camera
-    imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[2]
+    imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[0]
 
     for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
         matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
@@ -78,9 +91,18 @@ while True:
             y1, x2, y2, x1 = y1*1, x2*1, y2*1, x1*1 # resize square face recognition
             bbox = 55+x1, 162+y1, x2 - x1, y2 - y1 # bounding box (convert to cvzone format)
             imgBackground = cvzone.cornerRect(imgBackground, bbox,rt=0)
-        else:
-            print("Nothing Detected")
+            id = studentIds[matchIndex]
 
+            if counter == 0:
+                counter = 1
+
+    if counter != 0:
+
+        if counter == 1:
+            studentInfo = db.reference(f'Students/{id}').get()
+            print(studentInfo)
+
+        counter +=1
 
     # cv2.imshow("Webcam", img) #this just like a {consol.log} on jsFile
     cv2.imshow("Face Attendance", imgBackground) # background image

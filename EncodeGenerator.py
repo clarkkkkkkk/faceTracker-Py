@@ -3,6 +3,9 @@ import pickle
 import face_recognition
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from supabase import create_client, Client
 
 # Supabase credentials
