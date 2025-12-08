@@ -73,7 +73,7 @@ while True:
     encodeCurFrame = face_recognition.face_encodings(imgS, faceCurFrame) #
 
     imgBackground[168:168 + 480, 80:80 + 640] = img # position of the camera
-    imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[0]
+    imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[modeType]
 
     for encodeFace, faceLoc in zip(encodeCurFrame, faceCurFrame):
         matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
@@ -95,12 +95,15 @@ while True:
 
             if counter == 0:
                 counter = 1
-
+                modeType = 2
     if counter != 0:
 
         if counter == 1:
             studentInfo = db.reference(f'Students/{id}').get()
             print(studentInfo)
+
+        cv2.putText(imgBackground, str(studentInfo['total_attendance']), (900,110),
+                    cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),1)
 
         counter +=1
 

@@ -28,7 +28,7 @@ data = { # key
             "name": "Clark",
             "major": "Data Science",
             "starting_year": 2021,
-            "total_attendance": 32,
+            "total_attendance": 200,
             "standing": "Outstanding",
             "year": 3,
             "last_attendance_time": "2024-8-12 10:31:54",
