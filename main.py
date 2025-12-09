@@ -7,6 +7,7 @@ import cv2
 import face_recognition
 from importlib.metadata import files
 from PIL.ImageChops import offset
+import numpy as np
 
 import firebase_admin
 from firebase_admin import credentials
@@ -29,6 +30,7 @@ firebase_admin.initialize_app(cred,{
     'databaseURL': "https://faceattendanceproject-e9b0d-default-rtdb.firebaseio.com/",
 })
 
+bucket = storage.bucket()
 
 cap = cv2.VideoCapture(0) # use the camera
 cap.set(3, 640) #Video width Dimension
@@ -61,6 +63,7 @@ print("Encode File Loaded ...")
 modeType = 0
 counter = 0
 id = -1
+imgStudent = []
 
 #RUNNING PROCESS
 while True:
@@ -103,7 +106,10 @@ while True:
             studentInfo = db.reference(f'Students/{id}').get()
             print(studentInfo)
 
-            #Get data Image from the Storage
+            #Get data Image from the Supabase Storage
+            blob = bucket.get_blob(f'Images/{id}.jpg')
+            array = np.frombuffer(blob.download_as_string(), np.uint8)
+            imgStudent = cv2.imdecode(array, cv2.COLOR_BGRA2BGR)
 
         cv2.putText(imgBackground, str(studentInfo['total_attendance']), (900,110),
                     cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),1)
@@ -123,6 +129,7 @@ while True:
         cv2.putText(imgBackground, str(studentInfo['name']), (830+offset,440),
                     cv2.FONT_HERSHEY_COMPLEX,1,(0,0,0),1)
 
+        imgBackground[175:175+451, 909:909+346] = imgStudent
 
         counter +=1
 
