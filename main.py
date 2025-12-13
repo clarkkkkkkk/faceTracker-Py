@@ -30,7 +30,7 @@ firebase_admin.initialize_app(cred,{
     'databaseURL': "https://faceattendanceproject-e9b0d-default-rtdb.firebaseio.com/",
 })
 
-bucket = storage.bucket()
+storage = supabase.storage
 
 cap = cv2.VideoCapture(0) # use the camera
 cap.set(3, 640) #Video width Dimension
@@ -107,9 +107,13 @@ while True:
             print(studentInfo)
 
             #Get data Image from the Supabase Storage
-            blob = bucket.get_blob(f'Images/{id}.jpg')
-            array = np.frombuffer(blob.download_as_string(), np.uint8)
-            imgStudent = cv2.imdecode(array, cv2.COLOR_BGRA2BGR)
+            result = supabase.storage.from_(BUCKET_NAME).download(f'Images/{id}.jpg')
+
+            if result:
+                array = np.frombuffer(result, np.uint8)
+                imgStudent = cv2.imdecode(array, cv2.IMREAD_COLOR)
+                imgStudent = cv2.resize(imgStudent, (280, 214)) #Size of the small picture right panel
+
 
         cv2.putText(imgBackground, str(studentInfo['total_attendance']), (900,110),
                     cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),1)
@@ -129,7 +133,7 @@ while True:
         cv2.putText(imgBackground, str(studentInfo['name']), (830+offset,440),
                     cv2.FONT_HERSHEY_COMPLEX,1,(0,0,0),1)
 
-        imgBackground[175:175+451, 909:909+346] = imgStudent
+        imgBackground[178:178+214, 878:878+280] = imgStudent
 
         counter +=1
 
