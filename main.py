@@ -114,6 +114,7 @@ while True:
                 imgStudent = cv2.imdecode(array, cv2.IMREAD_COLOR)
                 imgStudent = cv2.resize(imgStudent, (280, 214)) #Size of the small picture right panel
 
+            #Get data of attendance
 
         cv2.putText(imgBackground, str(studentInfo['total_attendance']), (900,110),
                     cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),1)
