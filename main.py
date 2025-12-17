@@ -114,7 +114,10 @@ while True:
                 imgStudent = cv2.imdecode(array, cv2.IMREAD_COLOR)
                 imgStudent = cv2.resize(imgStudent, (280, 214)) #Size of the small picture right panel
 
-            #Get data of attendance
+            # Updating data of attendance from Firebase - Database
+            ref = db.reference(f'Students/{id}')
+            studentInfo['total_attendance'] += 1
+            ref.child('total_attendance').set(studentInfo['total_attendance'])
 
         cv2.putText(imgBackground, str(studentInfo['total_attendance']), (900,110),
                     cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),1)
