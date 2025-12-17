@@ -1,5 +1,6 @@
 import os
 import pickle
+from datetime import datetime
 from uu import encode
 import numpy as np
 import cvzone
@@ -8,6 +9,7 @@ import face_recognition
 from importlib.metadata import files
 from PIL.ImageChops import offset
 import numpy as np
+from datetime import datetime
 
 import firebase_admin
 from firebase_admin import credentials
@@ -115,31 +117,59 @@ while True:
                 imgStudent = cv2.resize(imgStudent, (280, 214)) #Size of the small picture right panel
 
             # Updating data of attendance from Firebase - Database
-            ref = db.reference(f'Students/{id}')
-            studentInfo['total_attendance'] += 1
-            ref.child('total_attendance').set(studentInfo['total_attendance'])
+            datetimeObject = datetime.strptime(studentInfo['last_attendance_time'],
+                                               "%Y-%m-%d %H:%M:%S")
 
-        cv2.putText(imgBackground, str(studentInfo['total_attendance']), (900,110),
-                    cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),1)
-        cv2.putText(imgBackground, str(studentInfo['major']), (1000,535),
-                    cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),1)
-        cv2.putText(imgBackground, str(id), (1000,482),
-                    cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),1)
-        cv2.putText(imgBackground, str(studentInfo['starting_year']), (1105,642),
-                    cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
-        cv2.putText(imgBackground, str(studentInfo['standing']), (1010,642),
-                    cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
-        cv2.putText(imgBackground, str(studentInfo['year']), (930,642),
-                    cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
+            secondsElapsed = (datetime.now()-datetimeObject).total_seconds() #Current date and time minus to dateTimeObject
+            print(secondsElapsed) #for testing
 
-        (w,h), _ = cv2.getTextSize(studentInfo['name'], cv2.FONT_HERSHEY_COMPLEX, 1, 2)
-        offset = (370-w)//2 # this 2 line of code is to off centre the text {name}
-        cv2.putText(imgBackground, str(studentInfo['name']), (830+offset,440),
-                    cv2.FONT_HERSHEY_COMPLEX,1,(0,0,0),1)
+            if secondsElapsed > 30: # 30 seconds
+                ref = db.reference(f'Students/{id}')
+                studentInfo['total_attendance'] += 1
+                ref.child('total_attendance').set(studentInfo['total_attendance'])
+                ref.child('last_attendance_time').set(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) #(ref.child) is calling function from firebase, (.set) is a function to import
+            else:
+                modeType = 1
+                counter = 0
+                imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[modeType]  # This shows the users face is already "ALREADY MARKED"
 
-        imgBackground[178:178+214, 878:878+280] = imgStudent
+        if modeType != 1:
+
+
+            if 10<counter<20: #if counter is within 10 to 20, is true. Otherwise, false.
+                modeType = 3
+                imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[modeType] # This shows if the users face is already "MARKED"
+
+            if counter <= 10:
+                cv2.putText(imgBackground, str(studentInfo['total_attendance']), (900,110),
+                            cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),1)
+                cv2.putText(imgBackground, str(studentInfo['major']), (1000,535),
+                            cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),1)
+                cv2.putText(imgBackground, str(id), (1000,482),
+                            cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),1)
+                cv2.putText(imgBackground, str(studentInfo['starting_year']), (1105,642),
+                            cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
+                cv2.putText(imgBackground, str(studentInfo['standing']), (1010,642),
+                            cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
+                cv2.putText(imgBackground, str(studentInfo['year']), (930,642),
+                            cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
+
+                (w,h), _ = cv2.getTextSize(studentInfo['name'], cv2.FONT_HERSHEY_COMPLEX, 1, 2)
+                offset = (370-w)//2 # this 2 line of code is to off centre the text {name}
+                cv2.putText(imgBackground, str(studentInfo['name']), (830+offset,440),
+                            cv2.FONT_HERSHEY_COMPLEX,1,(0,0,0),1)
+
+                imgBackground[178:178+214, 878:878+280] = imgStudent
 
         counter +=1
+
+        if counter >= 20:
+            counter = 0
+            modeType = 0
+            studentInfo = []
+            imgStudent = [] #reset student value information
+            imgBackground[30:30 + 673, 836:836 + 364] = imgModeList[modeType] # This shows the users face is already "ACTIVE"
+
 
     # cv2.imshow("Webcam", img) #this just like a {consol.log} on jsFile
     cv2.imshow("Face Attendance", imgBackground) # background image
