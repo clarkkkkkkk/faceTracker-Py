@@ -2,14 +2,12 @@ import os
 import pickle
 from datetime import datetime
 from uu import encode
-import numpy as np
 import cvzone
 import cv2
 import face_recognition
 from importlib.metadata import files
 from PIL.ImageChops import offset
 import numpy as np
-from datetime import datetime
 
 import firebase_admin
 from firebase_admin import credentials
