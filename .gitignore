@@ -5,3 +5,7 @@ Resources/
 .env
 serviceAccountKey.json
 *.json
+.env
+.env.local
+.env.development
+.env.production
